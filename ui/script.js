@@ -1,6 +1,7 @@
+var AllImageKeys = [];
+
 $( window ).on( "load", function(){
-    waterfall('main','pin');
-    var dataInt={'data':[{'src':'1.jpg'},{'src':'2.jpg'},{'src':'3.jpg'},{'src':'4.jpg'}]};
+    GetInitDatas();
     window.onscroll=function(){
         if(checkscrollside()){
             $.each( dataInt.data, function( index, value ){
@@ -14,14 +15,32 @@ $( window ).on( "load", function(){
     }
 });
 
+function GetInitDatas()
+{
+    $.ajax({
+        url:"http://localhost:8080/getalldata",
+        dataType: "json",
+        async: true,
+        type: "GET",
+        success: function (data)
+        {
+            AllImageKeys = data.allkeys;
+        },
+        headers: {
+            Accept: "application/json; charset=utf-8"
+        },
+    })
+}
+
 /*
     parend 父级id
     pin 元素id
 */
-function waterfall(parent,pin){
+function waterfall(){
     var $aPin = $( "#main>div" );
     var iPinW = $aPin.eq( 0 ).width();// 一个块框pin的宽
     var num = Math.floor( $( window ).width() / iPinW );//每行中能容纳的pin个数【窗口宽度除以一个块框宽度】
+    num = Math.min(num, 3); //最多三行
     var spaceWith = ($(window).width() - num * (iPinW + 15)) / 2;
     var strSpaceWith = spaceWith + 'px';
     $( "#main" ).css({

@@ -8,6 +8,7 @@ const App = new Koa();
 
 App.use(async (ctx, next) => {
     console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
+
     await next();
 });
 
@@ -18,9 +19,13 @@ home.get('/', async (ctx) => {
     ctx.body = strHtml
 });
 
-let router = new Router()
-router.use('/', home.routes(), home.allowedMethods())
-App.use(router.routes()).use(router.allowedMethods())
+home.get('/getalldata', async (ctx) => {
+    console.log("fuck")
+    ctx.response.type = "json";
+    ctx.response.body = {"allkeys": [1,2,3,4,5,6]};
+});
+
+App.use(home.routes());
 
 const staticPath = '../ui';
 App.use(KoaStatic(path.join(__dirname, staticPath)));

@@ -19,4 +19,11 @@ utils.readFileAsync = (fpath, encoding) => {
   });
 }
 
+utils.getAlldataAsync = (msgType)=> {
+  return new Promise ((resolve, reject) => {
+    console.log(msgType);
+    resolve({"allkeys": [1,2,3,4,5,6]});
+  });
+}
+
 module.exports = utils;
