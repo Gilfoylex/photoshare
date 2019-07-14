@@ -26,4 +26,22 @@ utils.getAlldataAsync = (msgType)=> {
   });
 }
 
+utils.convertKVtoVarry = (kva, vname) => {
+  let arr = [];
+  kva.forEach(element => {
+      arr[arr.length] = element[vname];
+  });
+  return arr;
+}
+
+utils.genQuesStr = (qusCount) =>
+{
+  let Arr = []
+  for(var i = 0; i < qusCount; ++i)
+  {
+    Arr[Arr.length] = '?';
+  }
+  return Arr.join(',');
+}
+
 module.exports = utils;
