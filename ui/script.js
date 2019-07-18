@@ -15,21 +15,28 @@ $(window).on("load", function () {
 });
 
 function renderImges(images) {
-    bLoaded = false;
+    var vecNewEle = [];
     var counts = images.length;
     if (counts > 0) {
+        bLoaded = false;
+        
         $.each(images, function (index, value) {
             var $oPin = $('<div>').addClass('pin').appendTo($("#container"));
             var $oBox = $('<div>').addClass('box').appendTo($oPin);
-            $('<img>').attr('src', value.path).attr('id', 'img').appendTo($oBox);
+            var $oImg = $('<img>').attr('src', value.path).attr('id', 'img').appendTo($oBox);
             $('<div>').text(value.des).addClass('descript').appendTo($oBox);
+            vecNewEle[vecNewEle.length] = $oImg;
         });
-        $('img').load(function () {
-            if ((--counts) == 0) {
-                waterfall();
-                bLoaded = true;
-            }
+
+        vecNewEle.forEach(function(value, index){
+            value.load(function () {
+                if (index == (counts-1)) {
+                    waterfall();
+                    bLoaded = true;
+                }
+            })
         })
+        
     }
 }
 
