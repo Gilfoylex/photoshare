@@ -30,7 +30,7 @@ function renderImges(images) {
 
         vecNewEle.forEach(function(value, index){
             value.load(function () {
-                if (index == (counts-1)) {
+                if (--counts == 0) {
                     waterfall();
                     bLoaded = true;
                 }
