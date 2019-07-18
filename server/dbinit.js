@@ -31,6 +31,7 @@ function insertData() {
     Fs.readdir('../ui/images', (err, filenames) => {
         filenames.forEach((filename) => {
             if (filename != '.DS_Store') {
+                console.log(filename);
                 insertAn('./images/' + filename);
             }
         })

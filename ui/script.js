@@ -5,31 +5,27 @@ var pinHArr = [];//用于存储 每列中的所有块框相加的高度。
 var bLoaded = true;
 
 $(window).on("load", function () {
-    //waterfall();
     $('#view').hide()
     GetInitDatas();
     window.onscroll = function () {
-        if (checkscrollside() && bLoaded) {
+        if (checkscrollside()) {
             GetNewData();
         };
     }
 });
 
-function renderImges(images)
-{
+function renderImges(images) {
     bLoaded = false;
     var counts = images.length;
-    if (counts > 0)
-    {
+    if (counts > 0) {
         $.each(images, function (index, value) {
             var $oPin = $('<div>').addClass('pin').appendTo($("#container"));
             var $oBox = $('<div>').addClass('box').appendTo($oPin);
             $('<img>').attr('src', value.path).attr('id', 'img').appendTo($oBox);
             $('<div>').text(value.des).addClass('descript').appendTo($oBox);
-        }); 
-        $('img').load(function(){
-            if ((--counts) == 0)
-            {
+        });
+        $('img').load(function () {
+            if ((--counts) == 0) {
                 waterfall();
                 bLoaded = true;
             }
@@ -39,7 +35,7 @@ function renderImges(images)
 
 function GetInitDatas() {
     $.ajax({
-        url: "http://"+ window.location.host +"/getalldata",
+        url: "http://" + window.location.host + "/getalldata",
         dataType: "json",
         async: true,
         type: "GET",
@@ -53,17 +49,14 @@ function GetInitDatas() {
     })
 }
 
-function GetPostKeys()
-{
-    var arr=[];
-    var num = ColNum * 2
-    if (AllKeys.length > num)
-    {
-        arr = AllKeys.slice(AllKeys.length  - num, AllKeys.length);
+function GetPostKeys() {
+    var arr = [];
+    var num = ColNum;
+    if (AllKeys.length > num) {
+        arr = AllKeys.slice(AllKeys.length - num, AllKeys.length);
         AllKeys = AllKeys.slice(0, AllKeys.length - num);
     }
-    else
-    {
+    else {
         arr = AllKeys;
         AllKeys = []
     }
@@ -72,15 +65,14 @@ function GetPostKeys()
 
 function GetNewData() {
     let arr = GetPostKeys();
-    if (arr.length > 0)
-    {
+    if (arr.length > 0) {
         $.ajax({
-            url: "http://"+ window.location.host +"/getimages",
+            url: "http://" + window.location.host + "/getimages",
             dataType: "json",
             async: true,
             type: "POST",
-            data: {imagkeys: arr},
-            success: function(result){
+            data: { imagkeys: arr },
+            success: function (result) {
                 renderImges(result.images);
             },
             headers: {
@@ -131,44 +123,50 @@ function waterfall() {
 }
 
 
-$(function () {
-    $(document).on('click', 'img#img', function(){
-        var scrollTop = $(document).scrollTop();
-        $('#view-image').attr('src', $(this).attr('src'));
-        $('#view').show();
-        var leftSpace = ($(window).width() - $('#view-image').width()) / 2
-        $("#view").css({
-            'height': $(window).height(),
-            'top': scrollTop
-        });
-        $('#view-image').css({
-            'left': leftSpace
-        })
+// $(function () {
+//     $(document).on('click', 'img#img', function(){
+//         var scrollTop = $(document).scrollTop();
+//         $('#view-image').attr('src', $(this).attr('src'));
+//         $('#view').show();
+//         var leftSpace = ($(window).width() - $('#view-image').width()) / 2
+//         $("#view").css({
+//             'height': $(window).height(),
+//             'top': scrollTop
+//         });
+//         $('#view-image').css({
+//             'left': leftSpace
+//         })
 
-        $('body').css({
-            'overflow': 'hidden',
-        })
-     });
+//         $('body').css({
+//             'overflow': 'hidden',
+//         })
+//      });
 
-    $('#view').click(function () {
-        $('#view').hide();
-        $('body').css({
-            'overflow': 'visible',
-        })
-    });
-});
+//     $('#view').click(function () {
+//         $('#view').hide();
+//         $('body').css({
+//             'overflow': 'visible',
+//         })
+//     });
+// });
 
 function checkscrollside() {
-    var $aPin = $("#container>div");
-    var l = $aPin.length;
-    var h1 = $aPin.get(l-1);
-    h1 = h1.offsetTop; 
-    h1 = Math.min.apply(null, pinHArr);
-    var h2 = $aPin.last().height();
-    //创建【触发添加块框函数waterfall()】的高度：最后一个块框的距离网页顶部+自身高的一半(实现未滚到底就开始加载)
-    //var lastPinH = $aPin.get(l-1).offsetTop + Math.floor($aPin.last().height() / 2);
-    var lastPinH = h1 + Math.floor(h2 /2);
-    var scrollTop = $(window).scrollTop()//注意解决兼容性
-    var documentH = $(document).width();//页面高度
-    return (lastPinH < scrollTop + documentH) ? true : false;//到达指定高度后 返回true，触发waterfall()函数
+    if (bLoaded) {
+        var $aPin = $("#container>div");
+        var l = $aPin.length;
+        var h1 = $aPin.get(0);
+        h1 = h1.offsetTop;
+        h1 = Math.min.apply(null, pinHArr);
+        var h2 = $aPin.last().height();
+        //创建【触发添加块框函数waterfall()】的高度：最后一个块框的距离网页顶部+自身高的一半(实现未滚到底就开始加载)
+        //var lastPinH = $aPin.get(l-1).offsetTop + Math.floor($aPin.last().height() / 2);
+        var lastPinH = h1 + Math.floor(h2 / 2);
+        var scrollTop = $(window).scrollTop()//注意解决兼容性
+        var documentH = $(window).height();//页面高度
+        return (lastPinH < scrollTop + documentH) ? true : false;//到达指定高度后 返回true，触发waterfall()函数
+    }
+    else {
+        return false;
+    }
+
 }

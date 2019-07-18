@@ -33,7 +33,7 @@ home.get('/getalldata', async (ctx) => {
         return .5 - Math.random();
     })
     let ImageKeys = [];
-    let counts = 4;
+    let counts = 10;
     if (allKeys.length > counts)
     {
         ImageKeys = allKeys.slice(allKeys.length-counts, allKeys.length);
@@ -76,7 +76,7 @@ App.use(KoaStatic(path.join(__dirname, staticPath)));
 
 const main = async () => {
     strHtml = await Utils.readFileAsync('../ui/index.html', 'utf-8');
-    App.listen(8080);
+    App.listen(80);
 }
 
 main();
